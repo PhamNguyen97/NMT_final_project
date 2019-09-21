@@ -23,9 +23,8 @@ def train_step(model, loss_function, optimizer, encoder_input, decoder_input, ta
                         train = True)
         loss_value = loss_function(target, logits)
     
-    model_trainable_variables = model.get_trainable_variables()
-    grads = tape.gradient(loss_value, model_trainable_variables)
-    optimizer.apply_gradients(zip(grads, model_trainable_variables))
+    grads = tape.gradient(loss_value, model.trainable_variables)
+    optimizer.apply_gradients(zip(grads, model.trainable_variables))
 
     return model, loss_value
 
