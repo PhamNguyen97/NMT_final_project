@@ -16,6 +16,7 @@ def main():
     parser.add_argument('-c', '--configure', help = 'configure file')
     parser.add_argument('-m', '--mode', help = 'real run or test mode')
     parser.add_argument('-b', '--batch_size', default=None, help = 'batch size')
+    parser.add_argument('-cp', '--checkpoint_dir', default=None, help = 'checkpoint folder')
 
     args = parser.parse_args()
     mode = args.mode
@@ -49,7 +50,10 @@ def main():
     optimizer = tf.keras.optimizers.Adam()
 
     # checkpoints
-    checkpoint_dir = config.get('checkpoint_dir', 'checkpoints')
+    if args.checkpoint_dir is None:
+        checkpoint_dir = config.get('checkpoint_dir', 'checkpoints')
+    else:
+        checkpoint_dir = args.checkpoint_dir
     checkpoint = tf.train.Checkpoint(optimizer=optimizer, model=model)
 
 
