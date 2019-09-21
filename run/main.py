@@ -93,7 +93,7 @@ def main():
                                                                                 num_step_to_print,
                                                                                 delta_time))
                     total_train_loss = 0
-                    print('save checkpoint to:', os.path.join(checkpoint_dir, "{}_{}.ckpt".format(epoch, index)))
+                    print('save checkpoint to:', os.path.join(checkpoint_dir, "{}_{}_{}.ckpt".format(epoch, index, total_valid_loss/data_loader.num_test_step)))
 
 
 
