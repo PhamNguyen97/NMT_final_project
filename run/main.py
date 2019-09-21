@@ -84,12 +84,13 @@ def main():
                                     encoder_input = test_eng_inp, 
                                     target = test_vi_tar)
                         total_valid_loss+= step_loss
-                    print("Validation_ epoch: {}, loss:{}".format(epoch, total_valid_loss/data_loader.num_test_step))
+                    print("Validation_ epoch: {}/{}, loss:{}".format(epoch, num_epochs, total_valid_loss/data_loader.num_test_step))
                     checkpoint.save(file_prefix=os.path.join(checkpoint_dir, "{}_{}_{}.ckpt".format(epoch, index, total_valid_loss/data_loader.num_test_step)))
                     delta_time = time.time()-start_time
                     start_time = time.time()
 
-                    print("epoch: {}, step: {}/{}, loss:{}, time_per_{}_step:{}".format(epoch, 
+                    print("epoch: {}/{}, step: {}/{}, loss:{}, time_per_{}_step:{}".format(epoch, 
+                                                                                num_epochs,
                                                                                 index, 
                                                                                 data_loader.num_step, 
                                                                                 total_train_loss/num_step_to_print,
