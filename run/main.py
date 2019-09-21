@@ -75,15 +75,15 @@ def main():
                 total_loss+=step_loss
                 if (index+1)%num_step_to_print ==0:
                     
-                    # for _, (test_eng_inp, test_vi_inp, test_vi_tar) in enumerate(data_loader.test_dataset):
-                    #     step_loss = test_step(model = model, 
-                    #                 loss_function = loss_function, 
-                    #                 encoder_input = test_eng_inp, 
-                    #                 target = test_vi_tar)
-                    #     total_loss+= step_loss
-                    #     print("Validation_ epoch: {}, loss:{}".format(epoch, total_loss/data_loader.num_test_step))
-                    #     total_loss = 0
-                    checkpoint.save(file_prefix=os.path.join(checkpoint_dir, "{}_{}.ckpt".format(epoch, index)))
+                    for _, (test_eng_inp, test_vi_inp, test_vi_tar) in enumerate(data_loader.test_dataset):
+                        step_loss = test_step(model = model, 
+                                    loss_function = loss_function, 
+                                    encoder_input = test_eng_inp, 
+                                    target = test_vi_tar)
+                        total_loss+= step_loss
+                    print("Validation_ epoch: {}, loss:{}".format(epoch, total_loss/data_loader.num_test_step))
+                    total_loss = 0
+                    checkpoint.save(file_prefix=os.path.join(checkpoint_dir, "{}_{}_{}.ckpt".format(epoch, index, total_loss/data_loader.num_test_step)))
                     delta_time = time.time()-start_time
                     start_time = time.time()
 
