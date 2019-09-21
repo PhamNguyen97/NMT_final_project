@@ -72,7 +72,7 @@
         "eng_train" : "nmt_data/vie-eng-iwslt/train.en",
         "vi_test" : "nmt_data/vie-eng-iwslt/tst2012.vi",
         "eng_test" : "nmt_data/vie-eng-iwslt/tst2012.en",
-        "batch_size": 5,
+        "batch_size": 64,
         "max_length": 40
     },
     "num_epochs": 2,
