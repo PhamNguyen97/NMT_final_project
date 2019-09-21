@@ -8,6 +8,7 @@ import tensorflow as tf
 import sys
 import warnings
 import copy
+import os
 tf.compat.v1.enable_eager_execution()
 
 def main():
