@@ -14,6 +14,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('-c', '--configure', help = 'configure file')
     parser.add_argument('-m', '--mode', help = 'real run or test mode')
+    parser.add_argument('-b', '--batch_size', default=None, help = 'batch size')
 
     args = parser.parse_args()
     mode = args.mode
@@ -22,6 +23,8 @@ def main():
         sys.exit()
 
     config = json.load(open(args.configure, 'r'))
+    if args.batch_size is not None:
+        config['data_loader_cfg']['batch_size'] = int(args.batch_size)
     num_epochs = config.get('num_epochs', 100)
     num_step_to_print = config.get('num_step_to_print', 100)
 
