@@ -47,6 +47,9 @@ def main():
     loss_function = Loss()
     optimizer = tf.keras.optimizers.Adam()
 
+    # checkpoints
+    checkpoint_dir = config.get('checkpoint_dir', 'checkpoints')
+
     # training loop
     for epoch in range(num_epochs):
         total_loss = 0
@@ -69,6 +72,14 @@ def main():
                 #     total_loss+= step_loss
                 #     print("Validation_ epoch: {}, loss:{}".format(epoch, total_loss/data_loader.num_test_step))
                 #     total_loss = 0
+                root = tf.train.Checkpoint(optimizer=optimizer,
+                           model=model,
+                           optimizer_step=tf.train.get_or_create_global_step())
+                root.save(os.path.join(checkpoint_dir, "{}_{}.ckpt".format(epoch, index)))
+
+
+
+
 
         
 if __name__ == "__main__":

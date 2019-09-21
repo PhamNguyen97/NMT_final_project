@@ -76,6 +76,7 @@
         "max_length": 40
     },
     "num_epochs": 2,
-    "num_step_to_print": 100
+    "num_step_to_print": 100,
+    "checkpoint_dir": "checkpoints"
 }
 
