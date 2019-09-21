@@ -76,6 +76,7 @@ def main():
                 root = tf.train.Checkpoint(optimizer=optimizer,
                            model=model,
                            optimizer_step=tf.compat.v1.train.get_or_create_global_step())
+                print('save checkpoint to:', os.path.join(checkpoint_dir, "{}_{}.ckpt".format(epoch, index))
                 root.save(os.path.join(checkpoint_dir, "{}_{}.ckpt".format(epoch, index)))
 
 
