@@ -75,7 +75,7 @@ def main():
                 #     total_loss = 0
                 root = tf.train.Checkpoint(optimizer=optimizer,
                            model=model,
-                           optimizer_step=tf.train.get_or_create_global_step())
+                           optimizer_step=tf.compat.v1.train.get_or_create_global_step())
                 root.save(os.path.join(checkpoint_dir, "{}_{}.ckpt".format(epoch, index)))
 
 
