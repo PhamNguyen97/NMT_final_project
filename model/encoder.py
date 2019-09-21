@@ -49,8 +49,8 @@ class Encoder(tf.keras.Model):
             trainable_variables = [*trainable_variables, *weight]
         return trainable_variables
 
-    def call(self, input):
-        all_state = self.embedding(input)
+    def call(self, inputs):
+        all_state = self.embedding(inputs)
         last_states = []
         for lstm_layer in self.lstm_layers:
             all_state, h, c = lstm_layer(all_state)

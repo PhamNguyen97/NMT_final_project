@@ -18,8 +18,7 @@ class Loss(object):
 
 def train_step(model, loss_function, optimizer, encoder_input, decoder_input, target):
     with tf.GradientTape() as tape:
-        logits = model(encoder_input = encoder_input, 
-                        decoder_input = decoder_input, 
+        logits = model(inputs = (encoder_input, decoder_input), 
                         train = True)
         loss_value = loss_function(target, logits)
     

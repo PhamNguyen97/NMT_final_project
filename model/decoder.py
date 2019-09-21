@@ -60,9 +60,9 @@ class Decoder(tf.keras.Model):
             trainable_variables = [*trainable_variables, *weight]
         return trainable_variables
 
-    def call(self, input, encoder_hidden_state, train = True):
+    def call(self, inputs, encoder_hidden_state, train = True):
         if train:
-            all_state = self.embedding(input)
+            all_state = self.embedding(inputs)
             for lstm_layer, initial_state in zip(self.lstm_layers, encoder_hidden_state):
                 all_state, h, c = lstm_layer(all_state, initial_state = initial_state)
             output = self.fully_connected(all_state)

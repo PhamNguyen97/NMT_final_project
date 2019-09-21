@@ -10,9 +10,10 @@ class Model(tf.keras.Model):
     def get_trainable_variables(self):
         return [*self.encoder.get_trainable_variables(), *self.decoder.get_trainable_variables()]
     
-    def call(self, encoder_input, decoder_input, train = True):
-        encoder_states, encoder_last_states = self.encoder(input = encoder_input)
-        output = self.decoder(input = decoder_input, 
+    def call(self, inputs, train = True):
+        encoder_input, decoder_input = inputs
+        encoder_states, encoder_last_states = self.encoder(inputs = encoder_input)
+        output = self.decoder(inputs = decoder_input, 
                             encoder_hidden_state = encoder_last_states, 
                             train = train)
         return output        
