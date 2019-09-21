@@ -50,6 +50,8 @@ def main():
 
     # checkpoints
     checkpoint_dir = config.get('checkpoint_dir', 'checkpoints')
+    checkpoint = tf.train.Checkpoint(optimizer=optimizer, model=model)
+
 
     # training loop
     for epoch in range(num_epochs):
@@ -73,11 +75,9 @@ def main():
                 #     total_loss+= step_loss
                 #     print("Validation_ epoch: {}, loss:{}".format(epoch, total_loss/data_loader.num_test_step))
                 #     total_loss = 0
-                root = tf.train.Checkpoint(optimizer=optimizer,
-                           model=model,
-                           optimizer_step=tf.compat.v1.train.get_or_create_global_step())
+                checkpoint.save(file_prefix=os.path.join(checkpoint_dir, "{}_{}.ckpt".format(epoch, index)))
+
                 print('save checkpoint to:', os.path.join(checkpoint_dir, "{}_{}.ckpt".format(epoch, index)))
-                root.save(os.path.join(checkpoint_dir, "{}_{}.ckpt".format(epoch, index)))
 
 
 
