@@ -61,8 +61,9 @@ def main():
     # training loop
     for epoch in range(num_epochs):
         total_loss = 0
+        start_time = time.time()
+
         for index, (eng_inp, vi_inp, vi_tar) in enumerate(data_loader.dataset):
-            start_time = time.time()
             
             model, step_loss = train_step(model = model, 
                                 loss_function = loss_function, 
@@ -83,6 +84,7 @@ def main():
                 #     total_loss = 0
                 checkpoint.save(file_prefix=os.path.join(checkpoint_dir, "{}_{}.ckpt".format(epoch, index)))
                 delta_time = time.time()-start_time
+                start_time = time.time()
 
                 print("epoch: {}, step: {}/{}, loss:{}, time_per_{}_step:{}".format(epoch, 
                                                                             index, 
