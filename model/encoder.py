@@ -1,7 +1,7 @@
 import tensorflow as tf 
 tf.compat.v1.enable_eager_execution()
 
-class Encoder(object):
+class Encoder(tf.keras.Model):
     def __init__(self, 
                 embedding_cfg = {        
                     "input_dim": -1,
@@ -34,6 +34,7 @@ class Encoder(object):
                     "unroll":False
                 },
                 num_lstm_layer = 1):
+        super(Encoder, self).__init__()
         self.embedding = tf.keras.layers.Embedding(**embedding_cfg)
         self.lstm_layers = []
         for _ in range(num_lstm_layer):
@@ -48,7 +49,7 @@ class Encoder(object):
             trainable_variables = [*trainable_variables, *weight]
         return trainable_variables
 
-    def __call__(self, input):
+    def call(self, input):
         all_state = self.embedding(input)
         last_states = []
         for lstm_layer in self.lstm_layers:

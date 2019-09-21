@@ -2,7 +2,7 @@ import tensorflow as tf
 import numpy as np
 tf.compat.v1.enable_eager_execution()
 
-class Decoder(object):
+class Decoder(tf.keras.Model):
     def __init__(self, 
                 embedding_cfg = {        
                     "input_dim": -1,
@@ -41,6 +41,8 @@ class Decoder(object):
                     "activation":None,
                     "use_bias":True
                 }):
+        super(Decoder, self).__init__()
+
         self.max_length = 40
         self.embedding = tf.keras.layers.Embedding(**embedding_cfg)    
         self.lstm_layers = []
@@ -58,7 +60,7 @@ class Decoder(object):
             trainable_variables = [*trainable_variables, *weight]
         return trainable_variables
 
-    def __call__(self, input, encoder_hidden_state, train = True):
+    def call(self, input, encoder_hidden_state, train = True):
         if train:
             all_state = self.embedding(input)
             for lstm_layer, initial_state in zip(self.lstm_layers, encoder_hidden_state):
