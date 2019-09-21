@@ -59,41 +59,42 @@ def main():
 
 
     # training loop
-    for epoch in range(num_epochs):
-        total_loss = 0
-        start_time = time.time()
+    with tf.device('/device:GPU:0'):
+        for epoch in range(num_epochs):
+            total_loss = 0
+            start_time = time.time()
 
-        for index, (eng_inp, vi_inp, vi_tar) in enumerate(data_loader.dataset):
-            
-            model, step_loss = train_step(model = model, 
-                                loss_function = loss_function, 
-                                optimizer = optimizer, 
-                                encoder_input = eng_inp, 
-                                decoder_input = vi_inp, 
-                                target = vi_tar)
-            total_loss+=step_loss
-            if (index+1)%num_step_to_print ==0:
+            for index, (eng_inp, vi_inp, vi_tar) in enumerate(data_loader.dataset):
                 
-                # for _, (test_eng_inp, test_vi_inp, test_vi_tar) in enumerate(data_loader.test_dataset):
-                #     step_loss = test_step(model = model, 
-                #                 loss_function = loss_function, 
-                #                 encoder_input = test_eng_inp, 
-                #                 target = test_vi_tar)
-                #     total_loss+= step_loss
-                #     print("Validation_ epoch: {}, loss:{}".format(epoch, total_loss/data_loader.num_test_step))
-                #     total_loss = 0
-                checkpoint.save(file_prefix=os.path.join(checkpoint_dir, "{}_{}.ckpt".format(epoch, index)))
-                delta_time = time.time()-start_time
-                start_time = time.time()
+                model, step_loss = train_step(model = model, 
+                                    loss_function = loss_function, 
+                                    optimizer = optimizer, 
+                                    encoder_input = eng_inp, 
+                                    decoder_input = vi_inp, 
+                                    target = vi_tar)
+                total_loss+=step_loss
+                if (index+1)%num_step_to_print ==0:
+                    
+                    # for _, (test_eng_inp, test_vi_inp, test_vi_tar) in enumerate(data_loader.test_dataset):
+                    #     step_loss = test_step(model = model, 
+                    #                 loss_function = loss_function, 
+                    #                 encoder_input = test_eng_inp, 
+                    #                 target = test_vi_tar)
+                    #     total_loss+= step_loss
+                    #     print("Validation_ epoch: {}, loss:{}".format(epoch, total_loss/data_loader.num_test_step))
+                    #     total_loss = 0
+                    checkpoint.save(file_prefix=os.path.join(checkpoint_dir, "{}_{}.ckpt".format(epoch, index)))
+                    delta_time = time.time()-start_time
+                    start_time = time.time()
 
-                print("epoch: {}, step: {}/{}, loss:{}, time_per_{}_step:{}".format(epoch, 
-                                                                            index, 
-                                                                            data_loader.num_step, 
-                                                                            total_loss/num_step_to_print,
-                                                                            num_step_to_print,
-                                                                            delta_time))
-                total_loss = 0
-                print('save checkpoint to:', os.path.join(checkpoint_dir, "{}_{}.ckpt".format(epoch, index)))
+                    print("epoch: {}, step: {}/{}, loss:{}, time_per_{}_step:{}".format(epoch, 
+                                                                                index, 
+                                                                                data_loader.num_step, 
+                                                                                total_loss/num_step_to_print,
+                                                                                num_step_to_print,
+                                                                                delta_time))
+                    total_loss = 0
+                    print('save checkpoint to:', os.path.join(checkpoint_dir, "{}_{}.ckpt".format(epoch, index)))
 
 
 
