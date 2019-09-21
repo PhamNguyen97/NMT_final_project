@@ -18,6 +18,7 @@ def main():
     parser.add_argument('-m', '--mode', help = 'real run or test mode')
     parser.add_argument('-b', '--batch_size', default=None, help = 'batch size')
     parser.add_argument('-cp', '--checkpoint_dir', default=None, help = 'checkpoint folder')
+    parser.add_argument('-rs', '--resume', default=None, help = 'resume checkpoint from checkpoint_dir')
 
     args = parser.parse_args()
     mode = args.mode
@@ -57,7 +58,9 @@ def main():
         checkpoint_dir = args.checkpoint_dir
     checkpoint = tf.train.Checkpoint(optimizer=optimizer, model=model)
 
-
+    if args.resume is not None:
+        status = checkpoint.restore(tf.train.latest_checkpoint(checkpoint_dir))
+        print('resumed checkpoint :', status)
     # training loop
     with tf.device('/device:GPU:0'):
         for epoch in range(num_epochs):
