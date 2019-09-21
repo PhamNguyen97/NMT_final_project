@@ -9,6 +9,7 @@ import sys
 import warnings
 import copy
 import os
+import time
 tf.compat.v1.enable_eager_execution()
 
 def main():
@@ -61,6 +62,8 @@ def main():
     for epoch in range(num_epochs):
         total_loss = 0
         for index, (eng_inp, vi_inp, vi_tar) in enumerate(data_loader.dataset):
+            start_time = time.time()
+            
             model, step_loss = train_step(model = model, 
                                 loss_function = loss_function, 
                                 optimizer = optimizer, 
@@ -69,8 +72,7 @@ def main():
                                 target = vi_tar)
             total_loss+=step_loss
             if (index+1)%num_step_to_print ==0:
-                print("epoch: {}, step: {}/{}, loss:{}".format(epoch, index, data_loader.num_step, total_loss/num_step_to_print))
-                total_loss = 0
+                
                 # for _, (test_eng_inp, test_vi_inp, test_vi_tar) in enumerate(data_loader.test_dataset):
                 #     step_loss = test_step(model = model, 
                 #                 loss_function = loss_function, 
@@ -80,7 +82,15 @@ def main():
                 #     print("Validation_ epoch: {}, loss:{}".format(epoch, total_loss/data_loader.num_test_step))
                 #     total_loss = 0
                 checkpoint.save(file_prefix=os.path.join(checkpoint_dir, "{}_{}.ckpt".format(epoch, index)))
+                delta_time = time.time()-start_time
 
+                print("epoch: {}, step: {}/{}, loss:{}, time_per_{}_step:{}".format(epoch, 
+                                                                            index, 
+                                                                            data_loader.num_step, 
+                                                                            total_loss/num_step_to_print,
+                                                                            num_step_to_print,
+                                                                            delta_time))
+                total_loss = 0
                 print('save checkpoint to:', os.path.join(checkpoint_dir, "{}_{}.ckpt".format(epoch, index)))
 
 
