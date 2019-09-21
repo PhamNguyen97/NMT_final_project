@@ -31,6 +31,7 @@ def make_vocab(data_file, thresh = 100, mode = 'test'):
     ids['1'] = '<bos>'
     ids['2'] = '<eos>'
     num_words = index+4
+
     return words, ids, num_words
 
 def sentence_to_ids(sentence, vocab, max_length):
@@ -38,13 +39,15 @@ def sentence_to_ids(sentence, vocab, max_length):
     line_words = list(map(lambda word: vocab[word] if word in vocab else vocab['<unk>'] , line_words))
     line_words = list(filter(lambda word_id: word_id!= 0, line_words))
     if len(line_words) > max_length-2:
-        line_words = line_words[:-2]
+        line_words = line_words[:max_length-2]
     line_words = [1, *line_words, 2]
-    line_words = line_words+[0]*(max_length-len(line_words))
+    if len(line_words) < max_length:
+        line_words = line_words+[0]*(max_length-len(line_words))
     return line_words
 
 def ids_to_sentence(ids, vocab_ids):
-    return list(map(lambda id: vocab_ids[str(id)], ids))
+    sentence_ids = list(filter(lambda id: id!=0, ids))
+    return list(map(lambda id: vocab_ids[str(id)], sentence_ids))[1:-1]
 
 
 class Data_processing(object):

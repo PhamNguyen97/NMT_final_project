@@ -1,4 +1,5 @@
 import tensorflow as tf 
+tf.compat.v1.enable_eager_execution()
 
 class Encoder(object):
     def __init__(self, 
@@ -37,6 +38,15 @@ class Encoder(object):
         self.lstm_layers = []
         for _ in range(num_lstm_layer):
             self.lstm_layers.append(tf.keras.layers.LSTM(**LSTM_cfg))
+    
+    def get_trainable_variables(self):
+        all_weights = [self.embedding.trainable_variables, 
+                *list(map(lambda item: item.trainable_variables, self.lstm_layers))]
+
+        trainable_variables = []
+        for weight in all_weights:
+            trainable_variables = [*trainable_variables, *weight]
+        return trainable_variables
 
     def __call__(self, input):
         all_state = self.embedding(input)
