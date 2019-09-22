@@ -42,6 +42,7 @@ class Data_loader(object):
             generator = self.valid_generator,
             output_types = (tf.int64, tf.int64, tf.int64)
         )
+        self.valid_dataset = self.valid_dataset.batch(batch_size, drop_remainder = True)
         self.num_valid_step = len(self.valid_data_ids)//batch_size
 
 
