@@ -82,6 +82,7 @@ def main():
                         step_loss = valid_step(model = model, 
                                     loss_function = loss_function, 
                                     encoder_input = test_eng_inp, 
+                                    decoder_input = vi_inp, 
                                     target = test_vi_tar)
                         total_valid_loss+= step_loss
                     print("Validation_ epoch: {}/{}, loss:{}".format(epoch, num_epochs, total_valid_loss/data_loader.num_test_step))
