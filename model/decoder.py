@@ -74,7 +74,7 @@ class Decoder(tf.keras.Model):
         # current_word = np.ones((batch_size,1))
         output = []
         # for _ in range(self.max_length-1):
-        for current_word_index in range(inpus.shape[1]):
+        for current_word_index in range(inputs.shape[1]):
             current_word = inputs[:,current_word_index]
             all_state = self.embedding(current_word)
             current_initial_state = []
