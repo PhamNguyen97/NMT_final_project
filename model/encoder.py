@@ -51,10 +51,13 @@ class Encoder(tf.keras.Model):
 
     def call(self, inputs):
         all_state = self.embedding(inputs)
-        last_states = []
-        for lstm_layer in self.lstm_layers:
-            all_state, h, c = lstm_layer(all_state)
-            last_states.append((h,c))
+        try:
+            last_states = []
+            for lstm_layer in self.lstm_layers:
+                all_state, h, c = lstm_layer(all_state)
+                last_states.append((h,c))
+        except:
+            print(all_state.shape)
 
         
         return all_state, last_states
