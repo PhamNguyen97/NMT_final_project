@@ -25,6 +25,10 @@ class Data_loader(object):
 
         self.data_ids = list(range(len(self.source_train)))
         shuffle(self.data_ids)
+
+        self.valid_data_ids = self.data_ids[:int(len(self.data_ids)*0.2)]
+        self.data_ids = self.data_ids[int(len(self.data_ids)*0.2)::]
+
         self.test_data_ids = list(range(len(self.source_test)))
 
         self.dataset = tf.data.Dataset.from_generator(
@@ -33,6 +37,12 @@ class Data_loader(object):
         )
         self.dataset = self.dataset.batch(batch_size, drop_remainder = True)
         self.num_step = len(self.data_ids)//batch_size
+
+        self.valid_dataset = tf.data.Dataset.from_generator(
+            generator = self.valid_generator,
+            output_types = (tf.int64, tf.int64, tf.int64)
+        )
+        self.num_valid_step = len(self.valid_data_ids)//batch_size
 
 
         self.test_dataset = tf.data.Dataset.from_generator(
@@ -54,6 +64,17 @@ class Data_loader(object):
                 shuffle(self.data_ids)
                 print('shuffled data')
             
+            yield (source_vec, target_vec[:-1], target_vec[1:])
+    
+    def valid_generator(self):
+        for index, data_id in enumerate(self.valid_data_ids):
+            source_vec = self.data_processor(sentence = self.source_train[data_id], 
+                                            vi = False, 
+                                            to_id = True)
+            target_vec = self.data_processor(sentence = self.target_train[data_id],
+                                            vi = True,
+                                            to_id = True)
+
             yield (source_vec, target_vec[:-1], target_vec[1:])
     
     def test_generator(self):

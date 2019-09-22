@@ -78,7 +78,6 @@ class Decoder(tf.keras.Model):
                 current_word = self.fully_connected(all_state)
                 output.append(current_word)  
 
-                current_word = tf.argmax(current_word, axis = 2)
                 initial_states = current_initial_state
             output = tf.concat(output,1)
             return output
