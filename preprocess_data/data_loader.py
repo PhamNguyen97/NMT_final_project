@@ -26,8 +26,8 @@ class Data_loader(object):
         self.data_ids = list(range(len(self.source_train)))
         shuffle(self.data_ids)
 
-        self.valid_data_ids = self.data_ids[:int(len(self.data_ids)*0.2)]
-        self.data_ids = self.data_ids[int(len(self.data_ids)*0.2)::]
+        self.valid_data_ids = self.data_ids[:int(len(self.data_ids)*0.2)].copy()
+        self.data_ids = self.data_ids[int(len(self.data_ids)*0.2)::].copy()
 
         self.test_data_ids = list(range(len(self.source_test)))
 
@@ -63,7 +63,6 @@ class Data_loader(object):
             if index==len(self.data_ids):
                 shuffle(self.data_ids)
                 print('shuffled data')
-            print('train_shape', source_vec.shape, target_vec.shape)
             yield (source_vec, target_vec[:-1], target_vec[1:])
     
     def valid_generator(self):
@@ -74,7 +73,6 @@ class Data_loader(object):
             target_vec = self.data_processor(sentence = self.target_train[data_id],
                                             vi = True,
                                             to_id = True)
-            print('valid_shape', source_vec.shape, target_vec.shape)
 
             yield (source_vec, target_vec[:-1], target_vec[1:])
     
