@@ -3,7 +3,7 @@ import json
 from model.encoder_decoder_arc import Model
 from preprocess_data.data_loader import Data_loader
 from run.train import train_step, Loss
-from run.test import test_step
+from run.test import valid_step
 import tensorflow as tf
 import sys
 import warnings
@@ -79,7 +79,7 @@ def main():
                 if (index+1)%num_step_to_print ==0:
                     total_valid_loss = 0
                     for _, (test_eng_inp, test_vi_inp, test_vi_tar) in enumerate(data_loader.test_dataset):
-                        step_loss = test_step(model = model, 
+                        step_loss = valid_step(model = model, 
                                     loss_function = loss_function, 
                                     encoder_input = test_eng_inp, 
                                     target = test_vi_tar)
