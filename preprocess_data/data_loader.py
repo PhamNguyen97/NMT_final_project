@@ -63,7 +63,7 @@ class Data_loader(object):
             if index==len(self.data_ids):
                 shuffle(self.data_ids)
                 print('shuffled data')
-            
+            print('train_shape', source_vec.shape, target_vec.shape)
             yield (source_vec, target_vec[:-1], target_vec[1:])
     
     def valid_generator(self):
@@ -74,6 +74,7 @@ class Data_loader(object):
             target_vec = self.data_processor(sentence = self.target_train[data_id],
                                             vi = True,
                                             to_id = True)
+            print('valid_shape', source_vec.shape, target_vec.shape)
 
             yield (source_vec, target_vec[:-1], target_vec[1:])
     
