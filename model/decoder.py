@@ -77,7 +77,7 @@ class Decoder(tf.keras.Model):
         for current_word_index in range(inputs.shape[1]):
             current_word = inputs[:,current_word_index]
             current_word = tf.expand_dims(current_word, 1)
-            print(inputs.shape, current_word.shape)
+            # print(inputs.shape, current_word.shape)
             all_state = self.embedding(current_word)
             current_initial_state = []
             for lstm_layer, initial_state in zip(self.lstm_layers, initial_states):
