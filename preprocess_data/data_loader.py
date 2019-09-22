@@ -26,8 +26,8 @@ class Data_loader(object):
         self.data_ids = list(range(len(self.source_train)))
         shuffle(self.data_ids)
 
-        self.valid_data_ids = self.data_ids[:int(len(self.data_ids)*0.2)]
-        self.data_ids = self.data_ids[int(len(self.data_ids)*0.2)::]
+        self.valid_data_ids = self.data_ids[:int(len(self.data_ids)*0.2),:]
+        self.data_ids = self.data_ids[int(len(self.data_ids)*0.2)::,:]
 
         self.test_data_ids = list(range(len(self.source_test)))
 

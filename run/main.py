@@ -34,8 +34,14 @@ def main():
 
     # data loader
     data_loader = Data_loader(**config.get('data_loader_cfg'), mode = mode)
+    print('____________data summary_________________')
+    print('_________________train___________________')
     print('num_train_data:',len(data_loader.data_ids))
     print('num_train_step:',data_loader.num_step)
+    print('_________________valid___________________')
+    print('num_valid_data:',len(data_loader.valid_data_ids))
+    print('num_valid_step:',data_loader.num_valid_step)
+    print('_________________test___________________')
     print('num_test_data:', len(data_loader.test_data_ids))
     print('num_test_step:', data_loader.num_test_step)
 
