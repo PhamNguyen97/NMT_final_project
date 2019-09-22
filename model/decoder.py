@@ -61,29 +61,31 @@ class Decoder(tf.keras.Model):
         return trainable_variables
 
     def call(self, inputs, encoder_hidden_state, train = True):
-        if train:
-            all_state = self.embedding(inputs)
-            for lstm_layer, initial_state in zip(self.lstm_layers, encoder_hidden_state):
+        # if train:
+        #     all_state = self.embedding(inputs)
+        #     for lstm_layer, initial_state in zip(self.lstm_layers, encoder_hidden_state):
+        #         all_state, h, c = lstm_layer(all_state, initial_state = initial_state)
+        #     output = self.fully_connected(all_state)
+        #     return output
+        # else:
+        initial_states = encoder_hidden_state
+        all_states = []
+        batch_size = initial_states[0][0].shape[0]
+        # current_word = np.ones((batch_size,1))
+        output = []
+        # for _ in range(self.max_length-1):
+        for current_word_index in range(inpus.shape[1]):
+            current_word = inputs[:,current_word_index]
+            all_state = self.embedding(current_word)
+            current_initial_state = []
+            for lstm_layer, initial_state in zip(self.lstm_layers, initial_states):
                 all_state, h, c = lstm_layer(all_state, initial_state = initial_state)
-            output = self.fully_connected(all_state)
-            return output
-        else:
-            initial_states = encoder_hidden_state
-            all_states = []
-            batch_size = initial_states[0][0].shape[0]
-            current_word = np.ones((batch_size,1))
-            output = []
-            for _ in range(self.max_length-1):
-                all_state = self.embedding(current_word)
-                current_initial_state = []
-                for lstm_layer, initial_state in zip(self.lstm_layers, initial_states):
-                    all_state, h, c = lstm_layer(all_state, initial_state = initial_state)
-                    current_initial_state.append((h,c))
+                current_initial_state.append((h,c))
 
-                current_word = self.fully_connected(all_state)
-                output.append(current_word)  
+            current_word = self.fully_connected(all_state)
+            output.append(current_word)  
 
-                current_word = tf.argmax(current_word, axis = 2)
-                initial_states = current_initial_state
-            output = tf.concat(output,1)
-            return output
+            current_word = tf.argmax(current_word, axis = 2)
+            initial_states = current_initial_state
+        output = tf.concat(output,1)
+        return output
