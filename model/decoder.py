@@ -60,7 +60,7 @@ class Decoder(tf.keras.Model):
             trainable_variables = [*trainable_variables, *weight]
         return trainable_variables
 
-    def call(self, inputs, encoder_hidden_state, train = True):
+    def call(self, inputs, encoder_hidden_state, train = True, beam_search = False):
         if train:
             initial_states = encoder_hidden_state
             all_states = []
@@ -81,9 +81,8 @@ class Decoder(tf.keras.Model):
                 initial_states = current_initial_state
             output = tf.concat(output,1)
             return output
-        else:
+        elif not beam_search:
             initial_states = encoder_hidden_state
-            all_states = []
             batch_size = initial_states[0][0].shape[0]
             current_word = np.ones((batch_size,1))
             output = []
@@ -101,3 +100,23 @@ class Decoder(tf.keras.Model):
                 initial_states = current_initial_state
             output = tf.concat(output,1)
             return output
+        else:
+            initial_states = encoder_hidden_state
+            batch_size = initial_states[0][0].shape[0]
+            current_word = np.ones((1,1))
+            pending_words = current_word
+
+            while True:
+                all_state = self.embedding(current_word)
+                current_initial_state = []
+                for lstm_layer, initial_state in zip(self.lstm_layers, initial_states):
+                    all_state, h, c = lstm_layer(all_state, initial_state = initial_state)
+                    current_initial_state.append((h,c))
+
+                current_predicted_word = self.fully_connected(all_state)
+                current_predicted_word = tf.math.top_k(tf.nn.softmax(current_word, axis = 2))
+                
+                if len(list(filter(lambda x: x!=2, current_word))) == 0:
+                    break
+
+

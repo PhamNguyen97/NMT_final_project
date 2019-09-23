@@ -6,3 +6,7 @@ def valid_step(model, loss_function, encoder_input, decoder_input, target):
     loss_value = loss_function(target, logits)
     
     return loss_value
+
+def test_step(model, encoder_input, target):
+    pass
+
