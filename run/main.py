@@ -68,7 +68,7 @@ def main():
         status = checkpoint.restore(tf.train.latest_checkpoint(checkpoint_dir))
         print('resumed checkpoint :', status)
     # training loop
-    with tf.device('/device:GPU:0'):
+    with tf.device('/device:GPU:0' if tf.test.is_gpu_available() else '/cpu:0'):
         for epoch in range(num_epochs):
             total_train_loss = 0
             start_time = time.time()

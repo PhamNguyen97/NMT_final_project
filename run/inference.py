@@ -11,6 +11,8 @@ import copy
 import os
 import time
 tf.compat.v1.enable_eager_execution()
+# from run.bleu import compute_bleu
+from nltk.translate.bleu_score import corpus_bleu
 
 def main():
     parser = argparse.ArgumentParser()
@@ -54,16 +56,55 @@ def main():
     checkpoint = tf.train.Checkpoint(optimizer=optimizer, model=model)
 
     if args.resume is not None:
-        print('_______________________]]]]]]]]]]]]]]]', tf.train.latest_checkpoint('./checkpoints/project_1'))
-        status = checkpoint.restore('./checkpoints/project_1/model_1.9139268398284912.ckpt-200')
+        print('_______________________]]]]]]]]]]]]]]]', tf.train.latest_checkpoint('./checkpoints'))
+        status = checkpoint.restore('./checkpoints/model_1.9139268398284912.ckpt-200')
         print('resumed checkpoint :', status)
     # training loop
-    with tf.device('/device:GPU:0'):
+    with tf.device('/device:GPU:0' if tf.test.is_gpu_available() else '/cpu:0'):
+        output1 = []
+        reffs = []
+
         for index, (test_eng_inp, test_vi_inp, test_vi_tar) in enumerate(data_loader.test_dataset):
-            output = model(inputs = (encoder_input, decoder_input),
+            output = model(inputs = (test_eng_inp, test_vi_inp),
                             train = False,
                             beam_search = False)
-            print(output)
+            out_ = output.numpy().tolist()
+
+            for item in out_:
+                current_sentence = []
+                for id_ in item:
+                    if id_==2:
+                        break
+                    else:
+                        current_sentence.append(str(id_))
+                output1.append(current_sentence)
+
+            reff = test_vi_tar.numpy().tolist()
+
+            for item in reff:
+                current_sentence = []
+                for id_ in item:
+                    if id_==2:
+                        break
+                    elif id_!=0:
+                        current_sentence.append(str(id_))
+                reffs.append([current_sentence])
+            
+            if (index+1)%10==0:
+                print(corpus_bleu(reffs, output1, weights=(0.5, 0.5, 0, 0)))
+
+                reffs = []
+                output1 = []
+
+            # output = data_loader.data_processor(sentence = list(map(lambda x: int(x),output1[0])), 
+            #                             vi = True,
+            #                             to_id = False)
+            # input_ = data_loader.data_processor(sentence = list(map(lambda x: int(x),test_vi_tar[0])),
+            #                             vi = True,
+            #                             to_id= False)
+            # print(reffs, output1)
+            # print('reff',' '.join(input_))
+            # print('output',' '.join(output))
 
 if __name__ == '__main__':
     main()

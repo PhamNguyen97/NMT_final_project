@@ -1,4 +1,5 @@
 import tensorflow as tf
+from run.bleu import compute_bleu
 
 def valid_step(model, loss_function, encoder_input, decoder_input, target):
     logits = model(inputs = (encoder_input, decoder_input), 
