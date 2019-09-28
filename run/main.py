@@ -95,8 +95,9 @@ def main():
                                     decoder_input = valid_vi_inp, 
                                     target = valid_vi_tar)
                         total_valid_loss+= step_loss
+                    
+
                     print("Validation_ epoch: {}/{}, loss:{}".format(epoch, num_epochs, total_valid_loss/data_loader.num_valid_step))
-                    checkpoint.save(file_prefix=os.path.join(checkpoint_dir, "model_{}.ckpt".format(total_valid_loss/data_loader.num_valid_step)))
                     delta_time = time.time()-start_time
                     start_time = time.time()
 
@@ -108,9 +109,12 @@ def main():
                                                                                 num_step_to_print,
                                                                                 delta_time))
                     total_train_loss = 0
-                    print('save checkpoint to:', os.path.join(checkpoint_dir, "model_{}.ckpt".format(total_valid_loss/data_loader.num_valid_step)))
-
-
+                    if epoch==0 or min_valid_loss>total_train_loss/data_loader.num_valid_step:
+                        min_valid_loss = total_train_loss/data_loader.num_valid_step                 
+                        checkpoint.save(file_prefix=os.path.join(checkpoint_dir, "model_{}.ckpt".format(total_valid_loss/data_loader.num_valid_step)))
+                        print('save checkpoint to:', os.path.join(checkpoint_dir, "model_{}.ckpt".format(total_valid_loss/data_loader.num_valid_step)))
+                    else:
+                        continue
 
 
 
