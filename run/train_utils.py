@@ -20,6 +20,7 @@ def train_step(model, loss_function, optimizer, encoder_input, decoder_input, ta
     with tf.GradientTape() as tape:
         logits = model(inputs = (encoder_input, decoder_input), 
                         train = True)
+        print(logits.shape)
         loss_value = loss_function(target, logits)
     
     grads = tape.gradient(loss_value, model.trainable_variables)

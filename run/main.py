@@ -1,8 +1,9 @@
 import argparse
 import json
-from model.encoder_decoder_arc import Model
 from preprocess_data.data_loader import Data_loader
-from run.train import train_step, Loss
+from model.encoder_decoder_arc import Model
+
+from run.train_utils import train_step, Loss
 from run.test import valid_step
 import tensorflow as tf
 import sys
@@ -19,8 +20,10 @@ def main():
     parser.add_argument('-b', '--batch_size', default=None, help = 'batch size')
     parser.add_argument('-cp', '--checkpoint_dir', default=None, help = 'checkpoint folder')
     parser.add_argument('-rs', '--resume', default=None, help = 'resume checkpoint from checkpoint_dir')
+    parser.add_argument('-att', '--with_attention', default = 0, help = ' model with attention')
 
     args = parser.parse_args()
+
     mode = args.mode
     if not mode in ['train', 'test']:
         warnings.warn('mode should be "train" or "test"')
@@ -51,7 +54,8 @@ def main():
     config['decoder_cfg']['fully_connected_cfg']['units'] = data_loader.data_processor.viet_size
 
     model = Model(encoder_cfg = config.get('encoder_cfg'),
-                decoder_cfg = config.get('decoder_cfg'))
+                decoder_cfg = config.get('decoder_cfg'),
+                with_att= int(args.with_attention))
     
     # define loss function and optimizer
     loss_function = Loss()

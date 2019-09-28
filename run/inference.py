@@ -21,6 +21,7 @@ def main():
     parser.add_argument('-b', '--batch_size', default=None, help = 'batch size')
     parser.add_argument('-cp', '--checkpoint_dir', default=None, help = 'checkpoint folder')
     parser.add_argument('-rs', '--resume', default=None, help = 'resume checkpoint from checkpoint_dir')
+    parser.add_argument('-n', '--num_to_print', default=10, help = 'num samples to print')
 
     args = parser.parse_args()
     mode = args.mode
@@ -45,15 +46,13 @@ def main():
                 decoder_cfg = config.get('decoder_cfg'))
     
     # define loss function and optimizer
-    loss_function = Loss()
-    optimizer = tf.keras.optimizers.Adam()
 
     # checkpoints
     if args.checkpoint_dir is None:
         checkpoint_dir = config.get('checkpoint_dir', 'checkpoints')
     else:
         checkpoint_dir = args.checkpoint_dir
-    checkpoint = tf.train.Checkpoint(optimizer=optimizer, model=model)
+    checkpoint = tf.train.Checkpoint(model=model)
 
     if args.resume is not None:
         print('_______________________]]]]]]]]]]]]]]]', tf.train.latest_checkpoint('./checkpoints'))
@@ -76,7 +75,7 @@ def main():
                     if id_==2:
                         break
                     else:
-                        current_sentence.append(str(id_))
+                        current_sentence.append(id_)
                 output1.append(current_sentence)
 
             reff = test_vi_tar.numpy().tolist()
@@ -87,24 +86,28 @@ def main():
                     if id_==2:
                         break
                     elif id_!=0:
-                        current_sentence.append(str(id_))
+                        current_sentence.append(id_)
                 reffs.append([current_sentence])
             
-            if (index+1)%10==0:
+            if (index+1)%int(args.num_to_print)==0:
                 print(corpus_bleu(reffs, output1, weights=(0.5, 0.5, 0, 0)))
 
                 reffs = []
                 output1 = []
-
-            # output = data_loader.data_processor(sentence = list(map(lambda x: int(x),output1[0])), 
-            #                             vi = True,
-            #                             to_id = False)
-            # input_ = data_loader.data_processor(sentence = list(map(lambda x: int(x),test_vi_tar[0])),
-            #                             vi = True,
-            #                             to_id= False)
-            # print(reffs, output1)
-            # print('reff',' '.join(input_))
-            # print('output',' '.join(output))
+                output_ = []
+                for  id_ in output.numpy()[0]:
+                    if id_!=2:
+                        output_.append(id_)
+                    else:
+                        break
+                output_ = data_loader.data_processor(sentence = output_, 
+                                            vi = True,
+                                            to_id = False)
+                input_ = data_loader.data_processor(sentence = list(map(lambda x: int(x),test_eng_inp.numpy()[0])),
+                                            vi = False,
+                                            to_id= False)
+                print('INPUT  :',' '.join(input_))
+                print('OUTPUT :',' '.join(output_))
 
 if __name__ == '__main__':
     main()
