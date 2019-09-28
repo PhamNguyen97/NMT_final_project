@@ -109,8 +109,8 @@ def main():
                                                                                 num_step_to_print,
                                                                                 delta_time))
                     total_train_loss = 0
-                    if epoch==0 or min_valid_loss>total_train_loss/data_loader.num_valid_step:
-                        min_valid_loss = total_train_loss/data_loader.num_valid_step                 
+                    if epoch==0 or min_valid_loss>total_valid_loss/data_loader.num_valid_step:
+                        min_valid_loss = total_valid_loss/data_loader.num_valid_step                 
                         checkpoint.save(file_prefix=os.path.join(checkpoint_dir, "model_{}.ckpt".format(total_valid_loss/data_loader.num_valid_step)))
                         print('save checkpoint to:', os.path.join(checkpoint_dir, "model_{}.ckpt".format(total_valid_loss/data_loader.num_valid_step)))
                     else:
