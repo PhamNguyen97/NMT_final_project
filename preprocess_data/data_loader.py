@@ -31,11 +31,11 @@ class Data_loader(object):
 
             self.valid_data_ids = self.data_ids[:int(len(self.data_ids)*0.2)].copy()
             self.data_ids = self.data_ids[int(len(self.data_ids)*0.2)::].copy()
-            np.save('nmt_data/train_valid_set/data_ids.npy', self.data_ids)
-            np.save('nmt_data/train_valid_set/valid_data_ids.npy', self.valid_data_ids)
+            np.save('train_valid_set/data_ids.npy', self.data_ids)
+            np.save('train_valid_set/valid_data_ids.npy', self.valid_data_ids)
         else:
-            self.valid_data_ids = np.load('nmt_data/train_valid_set/valid_data_ids.npy')
-            self.data_ids = np.load('nmt_data/train_valid_set/data_ids.npy')
+            self.valid_data_ids = np.load('train_valid_set/valid_data_ids.npy')
+            self.data_ids = np.load('train_valid_set/data_ids.npy')
 
         self.test_data_ids = list(range(len(self.source_test)))
 
