@@ -6,7 +6,7 @@ def sentence_to_words(sentence):
     sentence = re.sub('\d+|[.,!?;]',' ', sentence.lower()).strip()
     return re.findall(r"[\w']+|[.,!?;]", sentence)
 
-def make_vocab(data_file, thresh = 100, mode = 'test'):
+def make_vocab(data_file, thresh = 10, mode = 'test'):
     words = dict()
     with open(data_file, 'r', encoding="utf8") as file:
         for line_index, line in enumerate(file):
