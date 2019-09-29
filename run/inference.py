@@ -22,6 +22,7 @@ def main():
     parser.add_argument('-cp', '--checkpoint_dir', default=None, help = 'checkpoint folder')
     parser.add_argument('-rs', '--resume', default=None, help = 'resume checkpoint from checkpoint_dir')
     parser.add_argument('-n', '--num_to_print', default=10, help = 'num samples to print')
+    parser.add_argument('-att', '--with_attention', default = 0, help = ' model with attention')
 
     args = parser.parse_args()
     mode = args.mode
@@ -43,7 +44,8 @@ def main():
     config['decoder_cfg']['fully_connected_cfg']['units'] = data_loader.data_processor.viet_size
 
     model = Model(encoder_cfg = config.get('encoder_cfg'),
-                decoder_cfg = config.get('decoder_cfg'))
+                decoder_cfg = config.get('decoder_cfg'),
+                with_att = int(args.with_attention))
     
     # define loss function and optimizer
 
@@ -56,7 +58,7 @@ def main():
 
     if args.resume is not None:
         print('_______________________]]]]]]]]]]]]]]]', tf.train.latest_checkpoint('./checkpoints'))
-        status = checkpoint.restore('./checkpoints/model_1.9139268398284912.ckpt-200')
+        # status = checkpoint.restore('./checkpoints/model_1.9139268398284912.ckpt-200')
         print('resumed checkpoint :', status)
     # training loop
     with tf.device('/device:GPU:0' if tf.test.is_gpu_available() else '/cpu:0'):
