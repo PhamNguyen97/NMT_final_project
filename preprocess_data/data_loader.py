@@ -1,6 +1,7 @@
 import tensorflow as tf
 from preprocess_data.word2vec import Data_processing
 from random import shuffle
+import numpy as np
 
 class Data_loader(object):
     def __init__(self, 
@@ -10,7 +11,8 @@ class Data_loader(object):
                 eng_test = 'nmt_data/vie-eng-iwslt/tst2012.en',
                 mode = 'test',
                 batch_size = 5,
-                max_length = 40
+                max_length = 40,
+                resume = False
                 ):
         self.data_processor = Data_processing(vi_train = vi_train,
                                             eng_train = eng_train,
@@ -24,10 +26,16 @@ class Data_loader(object):
         self.target_test = open(vi_test, 'r').readlines()
 
         self.data_ids = list(range(len(self.source_train)))
-        shuffle(self.data_ids)
+        if not resume:
+            shuffle(self.data_ids)
 
-        self.valid_data_ids = self.data_ids[:int(len(self.data_ids)*0.2)].copy()
-        self.data_ids = self.data_ids[int(len(self.data_ids)*0.2)::].copy()
+            self.valid_data_ids = self.data_ids[:int(len(self.data_ids)*0.2)].copy()
+            self.data_ids = self.data_ids[int(len(self.data_ids)*0.2)::].copy()
+            np.save('nmt_data/train_valid_set/data_ids.npy', self.data_ids)
+            np.save('nmt_data/train_valid_set/valid_data_ids.npy', self.valid_data_ids)
+        else:
+            self.valid_data_ids = np.load('nmt_data/train_valid_set/valid_data_ids.npy')
+            self.data_ids = np.load('nmt_data/train_valid_set/data_ids.npy')
 
         self.test_data_ids = list(range(len(self.source_test)))
 
