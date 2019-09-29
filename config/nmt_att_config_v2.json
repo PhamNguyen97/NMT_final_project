@@ -1,0 +1,86 @@
+{
+    "encoder_cfg":{
+        "embedding_cfg": {
+            "input_dim": -1,
+            "output_dim": 300,
+            "embeddings_initializer":"uniform",
+            "embeddings_regularizer": "l2",
+            "mask_zero": true,
+            "input_length": 40
+        },
+        "LSTM_cfg":{
+            "units": 1000,
+            "activation":"tanh",
+            "recurrent_activation":"sigmoid",
+            "use_bias":true,
+            "kernel_initializer":"glorot_uniform",
+            "bias_initializer":"zeros",
+            "unit_forget_bias":true,
+            "kernel_regularizer":"l2",
+            "recurrent_regularizer":"l2",
+            "bias_regularizer":"l2",
+            "dropout":0.1,
+            "recurrent_dropout":0.1,
+            "implementation":2,
+            "return_sequences":true,
+            "return_state":true,
+            "go_backwards":false,
+            "stateful":false,
+            "unroll":false
+        },
+        "num_lstm_layer":2
+    },
+    "decoder_cfg":{
+        "embedding_cfg": {
+            "input_dim": -1,
+            "output_dim": 1000,
+            "embeddings_initializer":"uniform",
+            "embeddings_regularizer": "l2",
+            "mask_zero": true,
+            "input_length": 40
+        },
+        "LSTM_cfg":{
+            "units": 1000,
+            "activation":"tanh",
+            "recurrent_activation":"sigmoid",
+            "use_bias":true,
+            "kernel_initializer":"glorot_uniform",
+            "bias_initializer":"zeros",
+            "unit_forget_bias":true,
+            "kernel_regularizer":"l2",
+            "recurrent_regularizer":"l2",
+            "bias_regularizer":"l2",
+            "dropout":0.1,
+            "recurrent_dropout":0.1,
+            "implementation":2,
+            "return_sequences":true,
+            "return_state":true,
+            "go_backwards":false,
+            "stateful":false,
+            "unroll":false
+        },
+        "num_lstm_layer":2,
+        "max_length": 40,
+        "fully_connected_cfg":{
+            "units": -1,
+            "activation":null,
+            "use_bias":true
+        },
+        "attention_cfg":{
+            "hidden_size": 1000,
+            "num_heads": 4
+        }
+    },
+    "data_loader_cfg":{
+        "vi_train" : "nmt_data/vie-eng-iwslt/train.vi",
+        "eng_train" : "nmt_data/vie-eng-iwslt/train.en",
+        "vi_test" : "nmt_data/vie-eng-iwslt/tst2012.vi",
+        "eng_test" : "nmt_data/vie-eng-iwslt/tst2012.en",
+        "batch_size": 64,
+        "max_length": 40
+    },
+    "num_epochs": 100,
+    "num_step_to_print": 100,
+    "checkpoint_dir": "checkpoints"
+}
+

@@ -2,7 +2,7 @@ import argparse
 import json
 from model.encoder_decoder_arc import Model
 from preprocess_data.data_loader import Data_loader
-from run.train import train_step, Loss
+from run.train_utils import train_step, Loss
 from run.test import valid_step
 import tensorflow as tf
 import sys
@@ -48,17 +48,18 @@ def main():
                 with_att = int(args.with_attention))
     
     # define loss function and optimizer
+    optimizer = tf.keras.optimizers.Adam()
 
     # checkpoints
     if args.checkpoint_dir is None:
         checkpoint_dir = config.get('checkpoint_dir', 'checkpoints')
     else:
         checkpoint_dir = args.checkpoint_dir
-    checkpoint = tf.train.Checkpoint(model=model)
+    checkpoint = tf.train.Checkpoint(optimizer = optimizer, model=model)
 
     if args.resume is not None:
         print('_______________________]]]]]]]]]]]]]]]', tf.train.latest_checkpoint('./checkpoints'))
-        # status = checkpoint.restore('./checkpoints/model_1.9139268398284912.ckpt-200')
+        status = checkpoint.restore(tf.train.latest_checkpoint(checkpoint_dir))
         print('resumed checkpoint :', status)
     # training loop
     with tf.device('/device:GPU:0' if tf.test.is_gpu_available() else '/cpu:0'):
@@ -67,8 +68,7 @@ def main():
 
         for index, (test_eng_inp, test_vi_inp, test_vi_tar) in enumerate(data_loader.test_dataset):
             output = model(inputs = (test_eng_inp, test_vi_inp),
-                            train = False,
-                            beam_search = False)
+                            train = False)
             out_ = output.numpy().tolist()
 
             for item in out_:
@@ -92,7 +92,7 @@ def main():
                 reffs.append([current_sentence])
             
             if (index+1)%int(args.num_to_print)==0:
-                print(corpus_bleu(reffs, output1, weights=(0.5, 0.5, 0, 0)))
+                print(corpus_bleu(reffs, output1, weights=(0.25, 0.25, 0.25, 0.25)))
 
                 reffs = []
                 output1 = []

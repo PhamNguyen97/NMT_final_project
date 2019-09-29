@@ -1,5 +1,6 @@
 from model.attention import Attention
 import tensorflow as tf
+import numpy as np
 class Decoder(tf.keras.Model):
     def __init__(self, 
                 embedding_cfg = {        
@@ -53,6 +54,7 @@ class Decoder(tf.keras.Model):
         
         self.attention = Attention(**attention_cfg)
         self.fully_connected = tf.keras.layers.Dense(**fully_connected_cfg)
+
     
     def call(self, inputs, encoder_hidden_state, encoder_states, train = False):
         if train:

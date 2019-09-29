@@ -39,23 +39,20 @@ class Encoder(tf.keras.Model):
         self.lstm_layers = []
         for _ in range(num_lstm_layer):
             self.lstm_layers.append(tf.keras.layers.LSTM(**LSTM_cfg))
-    
-    def get_trainable_variables(self):
-        all_weights = [self.embedding.trainable_variables, 
-                *list(map(lambda item: item.trainable_variables, self.lstm_layers))]
 
-        trainable_variables = []
-        for weight in all_weights:
-            trainable_variables = [*trainable_variables, *weight]
-        return trainable_variables
-
-    def call(self, inputs):
+    def call(self, inputs, return_all_states = False):
         all_state = self.embedding(inputs)
-        last_states = []
+        last_states = [],
+        all_states = []
         for lstm_layer in self.lstm_layers:
             all_state, h, c = lstm_layer(all_state)
             last_states.append((h,c))
+            if return_all_states:
+                all_states.append(all_state)
         
-        return all_state, last_states
+        if return_all_states:
+            return all_state, last_states, all_states
+        else:
+            return all_state, last_states
         
         
